@@ -1,21 +1,42 @@
 import 'package:flutter/material.dart';
 
+import 'demo_auth.dart';
+import 'login_screen.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
+
+  void logout(BuildContext context) {
+    DemoAuth.logout();
+
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      (route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
+      appBar: AppBar(
+        title: const Text('Home'),
+        actions: [
+          IconButton(
+            tooltip: 'Logout',
+            icon: const Icon(Icons.logout),
+            onPressed: () => logout(context),
+          ),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
           const Icon(Icons.home, size: 80, color: Colors.indigo),
           const SizedBox(height: 16),
-          const Text(
-            'Welcome, Student!',
+          Text(
+            'Welcome, ${DemoAuth.currentUsername ?? 'Student'}!',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
           const Text(
@@ -23,9 +44,9 @@ class HomePage extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
-          Card(
+          const Card(
             child: Column(
-              children: const [
+              children: [
                 ListTile(
                   leading: Icon(Icons.calculate),
                   title: Text('Calculator'),
@@ -41,7 +62,7 @@ class HomePage extends StatelessWidget {
                 ListTile(
                   leading: Icon(Icons.share),
                   title: Text('Social Media'),
-                  subtitle: Text('View your sample social accounts.'),
+                  subtitle: Text('Post, like and comment in the student feed.'),
                 ),
               ],
             ),
