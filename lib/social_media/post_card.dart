@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../services/firestore_service.dart';
 import 'post.dart';
 
 class PostCard extends StatefulWidget {
   final Post post;
+  final String currentUsername;
 
-  const PostCard({super.key, required this.post});
+  const PostCard({
+    super.key,
+    required this.post,
+    required this.currentUsername,
+  });
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -13,27 +19,47 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   final TextEditingController commentController = TextEditingController();
+  final List<String> _localComments = [];
+  bool _localLiked = false;
 
-  final List<String> comments = [];
+  @override
+  void initState() {
+    super.initState();
+    _localComments.addAll(widget.post.comments);
+    _localLiked = widget.post.likes.contains(widget.currentUsername);
+  }
 
-  bool isLiked = false;
+  @override
+  void didUpdateWidget(covariant PostCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.post.id != null) {
+      _localLiked = widget.post.likes.contains(widget.currentUsername);
+    }
+  }
 
   void likePost() {
-    setState(() {
-      isLiked = !isLiked;
-    });
+    if (widget.post.id != null) {
+      FirestoreService.instance.toggleLike(widget.post.id!, widget.currentUsername);
+    } else {
+      setState(() {
+        _localLiked = !_localLiked;
+      });
+    }
   }
 
   void addComment() {
     final String comment = commentController.text.trim();
+    if (comment.isEmpty) return;
 
-    if (comment.isEmpty) {
-      return;
+    final formattedComment = '${widget.currentUsername}: $comment';
+
+    if (widget.post.id != null) {
+      FirestoreService.instance.addComment(widget.post.id!, formattedComment);
+    } else {
+      setState(() {
+        _localComments.add(formattedComment);
+      });
     }
-
-    setState(() {
-      comments.add(comment);
-    });
 
     commentController.clear();
   }
@@ -47,6 +73,12 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     final username = widget.post.username.trim();
+    final isLiked = widget.post.id != null
+        ? widget.post.likes.contains(widget.currentUsername)
+        : _localLiked;
+    final commentsList = widget.post.id != null
+        ? widget.post.comments
+        : _localComments;
 
     return Card(
       elevation: 3,
@@ -103,11 +135,21 @@ class _PostCardState extends State<PostCard> {
                 ),
                 label: Text(isLiked ? 'Liked' : 'Like'),
               ),
-              Text('${comments.length} Comments'),
+              const SizedBox(width: 8),
+              if (widget.post.likes.isNotEmpty)
+                Text(
+                  '${widget.post.likes.length} ${widget.post.likes.length == 1 ? 'like' : 'likes'}',
+                  style: const TextStyle(color: Colors.grey),
+                ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: Text('${commentsList.length} Comments'),
+              ),
             ],
           ),
 
-          for (final String comment in comments)
+          for (final String comment in commentsList)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
               child: Container(
@@ -132,6 +174,7 @@ class _PostCardState extends State<PostCard> {
                       hintText: 'Add a comment...',
                       border: OutlineInputBorder(),
                     ),
+                    onSubmitted: (_) => addComment(),
                   ),
                 ),
                 IconButton(

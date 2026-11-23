@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "123879083278",
+    "project_id": "corpuz-navigation-app",
+    "storage_bucket": "corpuz-navigation-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:123879083278:android:3bfdad7c4e229803b11b5f",
+        "android_client_info": {
+          "package_name": "com.example.corpuz_navigation_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9tzUjnznl7COGifUFjfZh8y9eT__mNeI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
