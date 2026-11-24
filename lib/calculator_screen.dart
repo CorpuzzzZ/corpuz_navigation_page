@@ -59,7 +59,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
     setState(() {
       errorText = null;
-      result = value % 1 == 0 ? value.toInt().toString() : value.toString();
+      result = value.toString();
     });
   }
 
@@ -96,9 +96,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             TextField(
               controller: firstController,
               keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-                signed: true,
-              ),
+                  decimal: true, signed: true),
               decoration: const InputDecoration(
                 labelText: 'First number',
                 border: OutlineInputBorder(),
@@ -108,9 +106,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             TextField(
               controller: secondController,
               keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-                signed: true,
-              ),
+                  decimal: true, signed: true),
               decoration: const InputDecoration(
                 labelText: 'Second number',
                 border: OutlineInputBorder(),
@@ -142,9 +138,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     'Result: $result',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        fontSize: 26, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -153,4 +147,4 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       ),
     );
   }
-}
+} 
